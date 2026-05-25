@@ -1,0 +1,476 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tarjetas didácticas — Potenciación</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- KaTeX -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script>
+
+  <style>
+    :root {
+      --bg:        #F3EDE1;
+      --bg-soft:   #EBE3D2;
+      --paper:     #FBF7EE;
+      --card:      #FFFFFF;
+      --ink:       #1F1B16;
+      --ink-2:     #4A4137;
+      --ink-3:     #7A6E5E;
+      --line:      #D9CFBA;
+      --line-soft: #E7DEC9;
+      --accent:    oklch(0.55 0.14 35);     /* terracotta */
+      --accent-hi: oklch(0.62 0.16 35);
+      --accent-lo: oklch(0.93 0.04 60);
+      --back-ink:  #1A1610;
+      --back-fg:   #F1E9D6;
+      --gold:      oklch(0.78 0.12 80);
+
+      --font-display: "Instrument Serif", "Times New Roman", serif;
+      --font-ui:      "Geist", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+      --font-mono:    "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+      --radius-card: 22px;
+      --radius-chip: 999px;
+      --shadow-card: 0 1px 0 rgba(31,27,22,0.04),
+                     0 6px 20px -10px rgba(31,27,22,0.18),
+                     0 32px 60px -28px rgba(31,27,22,0.22);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      font-family: var(--font-ui);
+      color: var(--ink);
+      background: var(--bg);
+      background-image:
+        radial-gradient(1200px 600px at 10% -10%, rgba(184, 85, 52, 0.06), transparent 60%),
+        radial-gradient(900px 700px at 100% 110%, rgba(120, 95, 60, 0.05), transparent 60%);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Subtle paper grain */
+    body::before {
+      content: "";
+      position: fixed; inset: 0;
+      pointer-events: none;
+      background-image:
+        radial-gradient(rgba(31,27,22,0.025) 1px, transparent 1.2px);
+      background-size: 3px 3px;
+      mix-blend-mode: multiply;
+      opacity: 0.6;
+      z-index: 0;
+    }
+
+    .app {
+      position: relative;
+      z-index: 1;
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 36px 28px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    /* ───── Header ───── */
+    .hdr {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .hdr-left { display: flex; align-items: center; gap: 18px; }
+    .brand-mark {
+      width: 56px; height: 56px;
+      border-radius: 16px;
+      background: var(--ink);
+      color: var(--paper);
+      display: grid; place-items: center;
+      box-shadow: 0 4px 16px -6px rgba(31,27,22,0.4);
+    }
+    .title {
+      font-family: var(--font-display);
+      font-size: 44px;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      margin: 0;
+      line-height: 1;
+    }
+    .subtitle {
+      margin: 6px 0 0;
+      font-size: 14px;
+      color: var(--ink-3);
+      font-family: var(--font-mono);
+      letter-spacing: 0.01em;
+    }
+    .hdr-right { display: flex; gap: 8px; }
+
+    .icon-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 9px 14px;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      font-family: var(--font-ui);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--ink-2);
+      cursor: pointer;
+      transition: all 160ms ease;
+    }
+    .icon-btn:hover { background: #fff; border-color: var(--ink-3); color: var(--ink); }
+    .icon-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--paper);
+    }
+
+    /* ───── Chips ───── */
+    .chips {
+      display: flex; flex-wrap: wrap;
+      gap: 6px;
+      padding: 6px;
+      background: var(--bg-soft);
+      border: 1px solid var(--line-soft);
+      border-radius: 14px;
+    }
+    .chip {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 7px 12px 7px 14px;
+      background: transparent;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-family: var(--font-ui);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--ink-2);
+      transition: all 140ms ease;
+      letter-spacing: 0.01em;
+    }
+    .chip:hover { background: rgba(255,255,255,0.6); color: var(--ink); }
+    .chip.on {
+      background: var(--ink);
+      color: var(--paper);
+      box-shadow: 0 2px 8px -3px rgba(31,27,22,0.3);
+    }
+    .chip-n {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 2px 6px;
+      background: rgba(31,27,22,0.06);
+      border-radius: 6px;
+      color: var(--ink-3);
+    }
+    .chip.on .chip-n {
+      background: rgba(255,255,255,0.15);
+      color: var(--paper);
+    }
+
+    /* ───── Progress ───── */
+    .progress-row {
+      display: flex; align-items: center; gap: 16px;
+    }
+    .progress-bar {
+      flex: 1;
+      height: 6px;
+      background: var(--bg-soft);
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid var(--line-soft);
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--accent-hi));
+      border-radius: 999px;
+      transition: width 320ms cubic-bezier(.2,.7,.2,1);
+    }
+    .progress-text {
+      font-size: 12.5px;
+      color: var(--ink-2);
+      font-family: var(--font-mono);
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+    }
+    .progress-text strong { color: var(--ink); font-weight: 600; }
+    .muted { color: var(--ink-3); }
+
+    /* ───── Stage / Card ───── */
+    .stage-wrap {
+      position: relative;
+      display: grid;
+      grid-template-columns: 56px 1fr 56px;
+      align-items: center;
+      gap: 16px;
+      margin-top: 4px;
+    }
+    .nav-btn {
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      color: var(--ink-2);
+      cursor: pointer;
+      display: grid; place-items: center;
+      transition: all 160ms ease;
+      box-shadow: 0 4px 12px -6px rgba(31,27,22,0.15);
+    }
+    .nav-btn:hover {
+      background: var(--ink);
+      color: var(--paper);
+      border-color: var(--ink);
+      transform: translateY(-1px);
+    }
+
+    .card-stage {
+      perspective: 1800px;
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      min-height: 440px;
+    }
+    .card-flip {
+      position: relative;
+      width: 100%; height: 100%;
+      transform-style: preserve-3d;
+      transition: transform 620ms cubic-bezier(.22,.61,.36,1);
+      cursor: pointer;
+    }
+    .card-flip.is-flipped { transform: rotateY(180deg); }
+    .card-flip:focus-visible { outline: none; }
+    .card-flip:focus-visible .face { box-shadow: var(--shadow-card), 0 0 0 3px var(--accent-lo); }
+
+    .face {
+      position: absolute; inset: 0;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      border-radius: var(--radius-card);
+      padding: 36px 44px 28px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow-card);
+      overflow: hidden;
+    }
+    .face.front {
+      background: var(--card);
+      border: 1px solid var(--line-soft);
+    }
+    /* Subtle ruled paper feel on front */
+    .face.front::before {
+      content: "";
+      position: absolute;
+      left: 44px; top: 80px; bottom: 60px;
+      width: 1px;
+      background: var(--accent);
+      opacity: 0.4;
+    }
+    .face.back {
+      background: var(--back-ink);
+      color: var(--back-fg);
+      transform: rotateY(180deg);
+      border: 1px solid #2a2418;
+    }
+    .face.back::before {
+      content: "";
+      position: absolute;
+      left: 44px; top: 80px; bottom: 60px;
+      width: 1px;
+      background: var(--gold);
+      opacity: 0.5;
+    }
+
+    .card-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 24px;
+      position: relative;
+      z-index: 1;
+    }
+    .chip-side {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--accent);
+      padding: 5px 10px;
+      background: var(--accent-lo);
+      border-radius: 999px;
+      font-weight: 500;
+    }
+    .back-chip {
+      color: var(--gold);
+      background: rgba(218, 180, 100, 0.12);
+    }
+    .chip-cat {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--ink-3);
+      letter-spacing: 0.04em;
+    }
+    .back-chip-cat { color: rgba(241, 233, 214, 0.55); }
+
+    .card-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-left: 24px;
+      position: relative;
+      z-index: 1;
+    }
+    .card-q {
+      font-family: var(--font-display);
+      font-size: 36px;
+      line-height: 1.22;
+      letter-spacing: -0.005em;
+      color: var(--ink);
+      text-wrap: pretty;
+    }
+    .card-a {
+      font-family: var(--font-display);
+      font-size: 38px;
+      line-height: 1.25;
+      letter-spacing: -0.005em;
+      color: var(--back-fg);
+      text-wrap: pretty;
+    }
+    .card-q strong, .card-a strong {
+      font-family: var(--font-ui);
+      font-weight: 600;
+      font-size: 0.86em;
+      letter-spacing: -0.01em;
+    }
+    .card-a strong { color: #fff; }
+
+    .card-footer {
+      display: flex; justify-content: space-between; align-items: center;
+      padding-top: 18px;
+      border-top: 1px solid var(--line-soft);
+      position: relative;
+      z-index: 1;
+    }
+    .back-footer { border-top-color: rgba(241, 233, 214, 0.1); }
+    .card-count {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      color: var(--ink-2);
+    }
+    .back-footer .card-count { color: var(--back-fg); }
+    .back-footer .muted { color: rgba(241, 233, 214, 0.5); }
+    .hint {
+      font-size: 12px;
+      color: var(--ink-3);
+      font-family: var(--font-ui);
+    }
+    .back-footer .hint { color: rgba(241, 233, 214, 0.55); }
+
+    /* ───── KaTeX styling ───── */
+    .kx-inline { font-size: 0.96em; }
+    .kx-display { margin: 14px 0; }
+    .face.back .katex { color: var(--back-fg); }
+    .face.back .katex .mord { color: var(--back-fg); }
+    .face.front .katex { color: var(--ink); }
+
+    /* Inline math right after text shouldn't break */
+    .card-q .kx-inline, .card-a .kx-inline { white-space: nowrap; }
+
+    /* ───── Actions ───── */
+    .actions {
+      display: flex; gap: 10px; justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+    .action {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 11px 18px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: var(--paper);
+      font-family: var(--font-ui);
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--ink-2);
+      cursor: pointer;
+      transition: all 160ms ease;
+      letter-spacing: 0.005em;
+    }
+    .action:hover { background: #fff; color: var(--ink); transform: translateY(-1px); }
+    .action.review { color: var(--accent); border-color: oklch(0.55 0.14 35 / 0.3); }
+    .action.review:hover { background: var(--accent-lo); border-color: var(--accent); }
+    .action.known {
+      background: var(--ink);
+      color: var(--paper);
+      border-color: var(--ink);
+    }
+    .action.known:hover { background: #0d0a06; border-color: #0d0a06; }
+    .action.flip-action {
+      background: transparent;
+      border-color: var(--ink-3);
+      color: var(--ink);
+    }
+    .action.flip-action:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+    /* ───── Footer ───── */
+    .foot {
+      display: flex; gap: 22px; justify-content: center;
+      margin-top: 6px;
+      padding-top: 18px;
+      border-top: 1px dashed var(--line);
+      font-size: 12px;
+      color: var(--ink-3);
+      flex-wrap: wrap;
+    }
+    kbd {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 2px 6px;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-bottom-width: 2px;
+      border-radius: 5px;
+      color: var(--ink-2);
+      margin: 0 2px;
+    }
+    .back-footer kbd {
+      background: rgba(241, 233, 214, 0.08);
+      border-color: rgba(241, 233, 214, 0.2);
+      color: var(--back-fg);
+    }
+
+    /* ───── Responsive ───── */
+    @media (max-width: 760px) {
+      .app { padding: 20px 16px; gap: 16px; }
+      .title { font-size: 32px; }
+      .stage-wrap { grid-template-columns: 44px 1fr 44px; gap: 10px; }
+      .nav-btn { width: 44px; height: 44px; }
+      .face { padding: 24px 22px 20px; }
+      .face.front::before, .face.back::before { display: none; }
+      .card-body { padding-left: 0; }
+      .card-q { font-size: 24px; }
+      .card-a { font-size: 26px; }
+      .card-stage { aspect-ratio: 3 / 4; min-height: 420px; }
+      .hint { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <!-- React -->
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+  <script src="flashcards-data.js"></script>
+  <script type="text/babel" src="flashcards-app.jsx"></script>
+</body>
+</html>
